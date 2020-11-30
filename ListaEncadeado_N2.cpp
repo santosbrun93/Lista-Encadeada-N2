@@ -12,9 +12,9 @@ typedef struct {          // registro para uma pessoa
        char nome[30];
 } INFORMACAO;
        
-typedef struct LISTA {
+typedef struct NODO {
        INFORMACAO info;   // dados do registro
-       struct LISTA* prox; // ponteiro para o próximo registro
+       struct NODO* prox; // ponteiro para o próximo registro
 }NODO; 
 
 
@@ -98,12 +98,16 @@ int main( void )
 void entrada_dados( NODO *aux ){
       
     printf( "\n\n Digite a código: " ); 
-    fflush( stdin );                                     // limpa buffer do teclado, funciona junto com entrada de dados
-    scanf("%d", &aux->info.codigo);
+    
+	fflush( stdin );                                     // limpa buffer do teclado, funciona junto com entrada de dados
+    
+	scanf("%d", &aux->info.codigo);
 
     printf( "\n Digite o nome: " );
-    fflush( stdin );     
-    gets( aux->info.nome );
+    
+	fflush( stdin );     
+    
+	gets( aux->info.nome );
   
     aux->prox = NULL;                                    // não aponta
 }
@@ -111,14 +115,19 @@ void entrada_dados( NODO *aux ){
 
 void imprime_lista( NODO *aux ){
      
-    if( aux == NULL )
-        printf( "\n Lista vazia!" );
+    if( aux == NULL )    
+		printf( "\n Lista vazia!" );
+	
 	else{
 	    printf("\n\n ---- Relatório Geral ---- ");
-        while( aux != NULL ){                            // ponteiro auxiliar para a lista
-               //printf( "\n Nome..: %s", aux->info.nome );
-               printf( "\n Código: %d", aux->info.codigo );
-               aux = aux->prox;                          // aponta para o proximo registro da lista
+        
+		while( aux != NULL ){                            // ponteiro auxiliar para a lista
+         
+		       printf( "\n Código: %d", aux->info.codigo ); //Imprimi código
+		       
+			   printf( "\n Nome: %s", aux->info.nome );   //Imprimi Nome
+         
+		       aux = aux->prox;                          // aponta para o proximo registro da lista
 		 } // fim while( aux != NULL )
 	} // fim if( aux == NULL )
 }
@@ -133,13 +142,18 @@ void cria_lista( NODO* *l ){
 void inclui_fim( NODO* *l ){
      
     NODO *no = ( NODO * ) malloc( sizeof( NODO ) ); // Alocar memória para novo registro
+  
     if( no == NULL )
         printf( "\n Lista cheia!" );
+  
     else{
         entrada_dados( no );             // Lê dados do novo registro a ser inserido na lista
+	
 		if( *l == NULL )                 // Lista vazia
 		    *l= no;                      // Novo registro inserido na lista
+	
 		else{
+	
 			NODO *p= *l;                 // p = ponteiro auxiliar para caminhar pela lista, inici no l
 			while( p->prox != NULL )     // Enquanto p for diferente de final de lista, anda pela lista
 		           p= p->prox;            
@@ -154,12 +168,17 @@ void inclui_fim( NODO* *l ){
 
 
 void inclui_inicio( NODO* *l ){
-  		NODO *no = ( NODO * ) malloc( sizeof( NODO ) ); // Alocar memória para novo registro
-   		if( no == NULL )
-        printf( "\n Lista cheia!" );
-    	else{
-        entrada_dados( no );             // Lê dados do novo registro a ser inserido na lista
+  	NODO *no = ( NODO * ) malloc( sizeof( NODO ) ); // Alocar memória para novo registro
+   	
+	  	if( no == NULL )
+      
+	    printf( "\n Lista cheia!" );
+    
+		else{
+        	entrada_dados( no );             // Lê dados do novo registro a ser inserido na lista
+	
 			if( *l == NULL )   *l= no;              // Lista vazia
+	
 		    else { 
 				no->prox = *l;
 				*l = no;
@@ -168,43 +187,53 @@ void inclui_inicio( NODO* *l ){
 }
 
 
-NODO* procura_nodo( NODO* p, int cod){
-    printf("\n Insira o número do código:\n");
+NODO* procura_nodo( NODO* l, int cod){
+    
+	printf("\n Insira o número do código:\n");
     
 	scanf("%d", & cod);
     
-	NODO *p= *l;
-     	while( p->prox != NULL )  {   // Enquanto p for diferente de final de lista, anda pela lista
-	        p= p->prox;            
-	        p->prox= no;
+	NODO *p = l;
+	
+//	NODO *aux = p;
+     	
+		 while( p->prox != NULL && p->info.codigo != cod )  {   // Enquanto p for diferente de final de lista, anda pela lista
+			p = p->prox;            
+	    }
+	    
+		if(p->info.codigo == cod){
+		   	printf( "\n Código: %d", p->info.codigo ); //Imprimi código
+		       
+		    printf( "\n Nome: %s", p->info.nome );   //Imprimi Nome			   	
 		}
-
 }
 
 
 void exclui_nodo( NODO** l, int cod){
-     
+    
+    NODO *p, *aux;     //Declaração ponteiros p e auxiliar
+    
+    aux = *l;
+    
+    p = l->prox;
+	 
     printf("\n Insira o número do código:\n");
     
 	scanf("%d", & cod);
-    
-	NODO *p = *l;
-	
-	NODO *aux = *l;
-        	while(p->prox != NULL )  {   // Enquanto p for diferente de final de lista, anda pela lista
-		           
-				   p= p->prox;            
-				   p->prox= no;
-				   
-				   if(p->info.codigo == cod){
-				   		aux = p->prox;
-				   		
-							
-				   	
-				   }
-				   
-			}
+	    	
+		while(p->prox != NULL && p->info.codigo != cod )  {   // Enquanto p for diferente de final de lista, anda pela lista
+			aux = p;
+      	
+		  	p = p->prox;
+   		}	
+		  
+	  		if (p != NULL) {
+      			aux->prox = p->prox;
+				  
+				free (p);
+  	 		}
 }
+
 
 void ordena_lista( NODO** l ){
      
